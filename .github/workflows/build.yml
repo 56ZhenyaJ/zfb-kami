@@ -1,4 +1,4 @@
-﻿name: Build dylib
+name: Build dylib
 
 on:
   push:
@@ -26,6 +26,13 @@ jobs:
           ln -sf "$SDK_PATH" "$HOME/theos/sdks/iPhoneOS${SDK_VERSION}.sdk"
           sed -i '' "s|^TARGET = .*|TARGET = iphone:clang:${SDK_VERSION}:14.0|" Makefile
           grep '^TARGET' Makefile
+
+      - name: Strip BOM
+        run: |
+          for f in Makefile Tweak.xm; do
+            [ -f "$f" ] && perl -i -pe 's/^\xEF\xBB\xBF//' "$f" || true
+            head -c 3 "$f" | xxd | head -1 || true
+          done
 
       - name: Build
         run: |
