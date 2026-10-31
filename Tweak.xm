@@ -11,7 +11,6 @@ static NSString *const kSignKey         = @"zfb-5b9d8d8f0d0548b0";
 static const NSTimeInterval kStartDelay = 1.5;          // 启动延迟1.5秒
 static const NSTimeInterval kHeartbeatInterval = 50;    // 心跳间隔50秒
 static const NSInteger kMaxHeartbeatFail = 5;           // 最大连续心跳失败次数
-static const NSTimeInterval kTimestampTolerance = 120;  // 时间戳误差容忍120秒
 static const NSTimeInterval kSuccessAlertDuration = 2;  // 成功弹窗显示时长
 
 #pragma mark - 本地存储Key
@@ -179,14 +178,6 @@ static int LocalB32Dec(NSString *s) {
     return n;
 }
 
-static NSString *LocalB32Enc(int n, int len) {
-    NSMutableString *out = [NSMutableString string];
-    for (int i = 0; i < len; i++) {
-        [out insertString:[kLocalAlphabet substringWithRange:NSMakeRange(n & 31, 1)] atIndex:0];
-        n >>= 5;
-    }
-    return out;
-}
 
 static int LocalSign20(NSString *prefix, NSString *udid) {
     NSString *h = MD5([NSString stringWithFormat:@"%@%@%@", kSignKey, prefix, udid ?: @""]);
