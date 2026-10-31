@@ -41,6 +41,10 @@ jobs:
           echo "=== dylib 搜索 ==="
           find . -name "*.dylib" -o -name "*.deb" | sort
 
+      - name: Sign dylib
+        run: |
+          find . -name '*.dylib' -print0 | xargs -0 -I{} sh -c 'ldid -S "{}" && ls -la "{}"'
+
       - name: Collect
         run: |
           mkdir -p out
