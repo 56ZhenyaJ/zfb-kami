@@ -1,4 +1,4 @@
-﻿# 卡密验证Tweak Makefile - 适配WSL2 Ubuntu22.04 + Theos
+# 卡密验证Tweak Makefile - 适配WSL2 Ubuntu22.04 + Theos
 # 使用前请确保已正确安装Theos环境，THEOS路径指向你的Theos目录
 THEOS ?= $(HOME)/theos
 ARCHS = arm64 arm64e
