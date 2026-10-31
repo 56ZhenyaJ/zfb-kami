@@ -1,4 +1,4 @@
-﻿#import <UIKit/UIKit.h>
+#import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <CommonCrypto/CommonDigest.h>
 #import <stdio.h>
