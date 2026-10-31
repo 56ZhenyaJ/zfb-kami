@@ -1,0 +1,9 @@
+Package: com.keyt.kamicheck
+Name: kamiCheck
+Depends: mobilesubstrate
+Version: 1.0
+Architecture: iphoneos-arm64e
+Description: 卡密验证插件
+Maintainer: keyi
+Author: keyi
+Section: Tweaks

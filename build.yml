@@ -1,0 +1,56 @@
+﻿name: Build dylib
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Theos
+        run: |
+          brew install ldid || true
+          git clone --recursive --depth 1 https://github.com/theos/theos.git $HOME/theos
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+
+      - name: Setup iOS SDK
+        run: |
+          SDK_PATH=$(xcrun --sdk iphoneos --show-sdk-path)
+          SDK_VERSION=$(xcrun --sdk iphoneos --show-sdk-version)
+          echo "SDK: $SDK_PATH ($SDK_VERSION)"
+          mkdir -p $HOME/theos/sdks
+          ln -sf "$SDK_PATH" "$HOME/theos/sdks/iPhoneOS${SDK_VERSION}.sdk"
+          sed -i '' "s|^TARGET = .*|TARGET = iphone:clang:${SDK_VERSION}:14.0|" Makefile
+          grep '^TARGET' Makefile
+
+      - name: Build
+        run: |
+          make clean || true
+          make -j$(sysctl -n hw.logicalcpu) || make V=1
+          echo "=== dylib 搜索 ==="
+          find . -name "*.dylib" -o -name "*.deb" | sort
+
+      - name: Collect
+        run: |
+          mkdir -p out
+          find . -name "*.dylib" -exec cp {} out/ \;
+          find . -name "*.deb" -exec cp {} out/ \;
+          ls -la out || true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kamiCheck-dylib
+          path: out/
+          if-no-files-found: warn
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-log
+          path: |
+            .theos/
+          if-no-files-found: ignore
